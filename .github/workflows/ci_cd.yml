@@ -1,0 +1,44 @@
+name: CI/CD Pipeline Gestion Librairie
+
+on:
+  push:
+    branches: [ madina_diallo_librairie ]
+  pull_request:
+    branches: [ madina_diallo_librairie ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install NPM dependencies
+        run: npm install
+
+      - name: Build assets
+        run: npm run build
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: false
+          tags: librairie-app:latest
+
+      # Si vous avez accès à un serveur pour le déploiement
+      # Vous pouvez ajouter des étapes supplémentaires pour déployer
+      # sur votre serveur de production
