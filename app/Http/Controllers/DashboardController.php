@@ -145,12 +145,39 @@ class DashboardController extends Controller
         $result = array_fill(0, 12, 0); // Initialiser un tableau de 12 mois avec des zéros
 
         foreach ($commandesData as $data) {
-            $monthIndex = (int)$data->month - 1; // Les indices de tableau commencent à 0
+            $monthIndex = (int)$data->month - 1;
             $result[$monthIndex] = (int)$data->count;
         }
 
         return $result;
     }
+
+//    private function getVentesParCategorie($startDate, $endDate)
+//    {
+//        $categories = Categorie::all();
+//        $result = [
+//            'labels' => [],
+//            'data' => [],
+//            'colors' => [
+//                '#FF85A2', '#5DADE2', '#FFDA83', '#70D6BF', '#BF7CFF',
+//                '#FF6B6B', '#4ECDC4', '#FFD166', '#577590', '#F2CC8F',
+//                '#E07A5F', '#81B29A', '#F4A261', '#6D597A', '#B5838D'
+//            ]
+//        ];
+//
+//        foreach ($categories as $index => $categorie) {
+//            $ventesCategorie = OrderItem::join('livres', 'order_items.livre_id', '=', 'livres.id')
+//                ->join('orders', 'order_items.order_id', '=', 'orders.id')
+//                ->where('livres.categorie_id', $categorie->id)
+//                ->whereBetween('orders.created_at', [$startDate, $endDate])
+//                ->sum('order_items.quantite');
+//
+//            $result['labels'][] = $categorie->nom;
+//            $result['data'][] = (int)$ventesCategorie;
+//        }
+//
+//        return $result;
+//    }
 
     private function getVentesParCategorie($startDate, $endDate)
     {
@@ -172,7 +199,10 @@ class DashboardController extends Controller
                 ->whereBetween('orders.created_at', [$startDate, $endDate])
                 ->sum('order_items.quantite');
 
-            $result['labels'][] = $categorie->nom;
+            // Ajouter le nom de la catégorie à labels (même si pas de ventes)
+            $result['labels'][] = $categorie->libelle;
+
+            // S'assurer que la valeur est un entier (0 si pas de ventes)
             $result['data'][] = (int)$ventesCategorie;
         }
 

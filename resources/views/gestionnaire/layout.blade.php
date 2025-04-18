@@ -472,10 +472,8 @@
                 </a>
                 <ul class="submenu">
                     <li><a href="{{ route('gestion.orders.index') }}" id="all-orders-link">Toutes les commandes</a></li>
-                    <li><a href="#" id="pending-orders-link">Commandes en attente</a></li>
-                    <li><a href="#" id="processing-orders-link">Commandes en préparation</a></li>
-                    <li><a href="#" id="shipped-orders-link">Commandes expédiées</a></li>
-                    <li><a href="#" id="paid-orders-link">Commandes payées</a></li>
+                    <li><a href="{{ route('gestion.orders.pending') }}" id="pending-orders-link">Commandes en attente</a></li>
+                    <li><a href="{{ route('gestion.orders.paid') }}" id="paid-orders-link">Commandes payées</a></li>
                 </ul>
             </li>
             <li>
@@ -484,22 +482,20 @@
                     <i class="bi bi-chevron-down float-end"></i>
                 </a>
                 <ul class="submenu">
-                    <li><a href="#" id="record-payment-link">Enregistrer un paiement</a></li>
-                    <li><a href="#" id="payment-history-link">Historique des paiements</a></li>
-                    <li><a href="#" id="daily-revenue-link">Recettes journalières</a></li>
+                    <li><a href="{{ route('gestion.paiement.index') }}" id="payment-history-link">Historique des paiements</a></li>
                 </ul>
             </li>
-            <li>
-                <a href="#" class="has-submenu">
-                    <i class="bi bi-bar-chart"></i> Rapports & Statistiques
-                    <i class="bi bi-chevron-down float-end"></i>
-                </a>
-                <ul class="submenu">
-                    <li><a href="#" id="monthly-sales-link">Ventes mensuelles</a></li>
-                    <li><a href="#" id="popular-books-link">Livres populaires</a></li>
-                    <li><a href="#" id="category-stats-link">Statistiques par catégorie</a></li>
-                </ul>
-            </li>
+{{--            <li>--}}
+{{--                <a href="#" class="has-submenu">--}}
+{{--                    <i class="bi bi-bar-chart"></i> Rapports & Statistiques--}}
+{{--                    <i class="bi bi-chevron-down float-end"></i>--}}
+{{--                </a>--}}
+{{--                <ul class="submenu">--}}
+{{--                    <li><a href="#" id="monthly-sales-link">Ventes mensuelles</a></li>--}}
+{{--                    <li><a href="#" id="popular-books-link">Livres populaires</a></li>--}}
+{{--                    <li><a href="#" id="category-stats-link">Statistiques par catégorie</a></li>--}}
+{{--                </ul>--}}
+{{--            </li>--}}
 
         </ul>
     </nav>
@@ -516,12 +512,12 @@
                     <button class="btn btn-light position-relative" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-bell"></i>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge">
-
-                            </span>
+                            0
+                        </span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
                         <li><h6 class="dropdown-header">Notifications</h6></li>
-                        <li><a class="dropdown-item" href="#">Nouvelle commande #12345</a></li>
+                        <li><a class="dropdown-item" href="#"></a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item text-center" href="#">Voir toutes les notifications</a></li>
                     </ul>
@@ -701,5 +697,6 @@
 
 
 </script>
+
 </body>
 </html>

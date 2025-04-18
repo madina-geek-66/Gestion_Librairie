@@ -116,12 +116,63 @@ class OrderController extends Controller
 
     public function adminIndex()
     {
-        // Pour le gestionnaire: afficher toutes les commandes
+
         $orders = Order::with('user')
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
         return view('gestionnaire.orders.index', compact('orders'));
+    }
+
+    public function pendingOrders(Request $request)
+    {
+        $query = Order::with('user')
+            ->where('statut', 'En attente');
+
+        // Appliquer la recherche si elle est fournie
+        if ($request->has('search') && !empty($request->search)) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('id', 'like', "%{$searchTerm}%")
+                    ->orWhereHas('user', function($userQuery) use ($searchTerm) {
+                        $userQuery->where('nom', 'like', "%{$searchTerm}%")
+                            ->orWhere('prenom', 'like', "%{$searchTerm}%");
+                    });
+            });
+        }
+
+        $orders = $query->orderBy('created_at', 'desc')
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('gestionnaire.orders.pending', compact('orders'));
+    }
+
+    /**
+     * Affiche les commandes payées
+     */
+    public function paidOrders(Request $request)
+    {
+        $query = Order::with('user')
+            ->where('statut', 'Payée');
+
+        // Appliquer la recherche si elle est fournie
+        if ($request->has('search') && !empty($request->search)) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('id', 'like', "%{$searchTerm}%")
+                    ->orWhereHas('user', function($userQuery) use ($searchTerm) {
+                        $userQuery->where('nom', 'like', "%{$searchTerm}%")
+                            ->orWhere('prenom', 'like', "%{$searchTerm}%");
+                    });
+            });
+        }
+
+        $orders = $query->orderBy('created_at', 'desc')
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('gestionnaire.orders.paid', compact('orders'));
     }
 
     public function adminShow(Order $order)

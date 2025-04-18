@@ -1,11 +1,11 @@
 @extends('gestionnaire.layout')
-@section('title', 'Historique des paiements')
+@section('title', 'Commandes payées')
 @section('content')
 
     <div class="container-fluid">
         <!-- En-tête de la page -->
         <div class="page-header">
-            <h1 class="h3 mb-0 text-gray-800">Historique des Paiements</h1>
+            <h1 class="h3 mb-0 text-gray-800">Commandes payées</h1>
         </div>
 
         <!-- Messages d'alerte -->
@@ -23,23 +23,20 @@
             </div>
         @endif
 
-        <!-- Filtres de paiements -->
+        <!-- Filtres de commandes -->
         <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                <h6 class="m-0 font-weight-bold text-primary">Filtrer les paiements</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Filtrer les commandes payées</h6>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-8 mb-3">
-                        <form class="d-flex gap-2" action="{{ route('gestion.paiement.index') }}" method="GET">
+                        <form class="d-flex gap-2" action="{{ route('gestion.orders.paid') }}" method="GET">
                             <div class="form-group flex-grow-1 mb-0">
                                 <input type="text" class="form-control" name="search" placeholder="Rechercher par ID ou client" value="{{ request('search') }}">
                             </div>
-                            <div class="form-group mb-0">
-                                <input type="date" class="form-control" name="date" value="{{ request('date') }}">
-                            </div>
                             <button type="submit" class="btn btn-primary">Filtrer</button>
-                            <a href="{{ route('gestion.paiement.index') }}" class="btn btn-outline-secondary">Réinitialiser</a>
+                            <a href="{{ route('gestion.orders.paid') }}" class="btn btn-outline-secondary">Réinitialiser</a>
                         </form>
                     </div>
                     <div class="col-md-4 text-md-end">
@@ -57,47 +54,53 @@
             </div>
         </div>
 
-        <!-- Liste des paiements -->
+        <!-- Liste des commandes -->
         <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                <h6 class="m-0 font-weight-bold text-primary">Liste des paiements</h6>
-                <span class="badge bg-primary">{{ $paiements->total() }} paiements</span>
+                <h6 class="m-0 font-weight-bold text-primary">Liste des commandes payées</h6>
+                <span class="badge bg-primary">{{ $orders->total() }} commandes</span>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover">
                         <thead>
                         <tr>
-{{--                            <th>ID</th>--}}
-                            <th>Commande #</th>
+                            <th>ID</th>
                             <th>Client</th>
-                            <th>Date de paiement</th>
-                            <th>Montant (TVA incluse)</th>
+                            <th>Date</th>
+                            <th>Montant</th>
+                            <th>Paiement</th>
                             <th class="text-center">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @forelse($paiements as $paiement)
+                        @forelse($orders as $order)
                             <tr>
-{{--                                <td>{{ $paiement->id }}</td>--}}
-                                <td>CMD-00{{ $paiement->order_id }}</td>
-                                <td>{{ $paiement->order->user->nom }} {{ $paiement->order->user->prenom }}</td>
-                                <td>{{ \Carbon\Carbon::parse($paiement->date_paiement)->format('d/m/Y H:i') }}</td>
-                                <td>{{ number_format($paiement->montant, 0, ',', ' ') }} XOF</td>
+                                <td>#{{ $order->id }}</td>
+                                <td>{{ $order->user->nom }} {{ $order->user->prenom }}</td>
+                                <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>
+                                <td>{{ number_format($order->total, 0, ',', ' ') }} XOF</td>
+                                <td>
+                                    @if($order->paiement)
+                                        <span class="badge bg-success">Payée le {{ \Carbon\Carbon::parse($order->paiement->date_paiement)->format('d/m/Y') }}</span>
+                                    @else
+                                        <span class="badge bg-success">Payée</span>
+                                    @endif
+                                </td>
                                 <td class="text-center">
                                     <div class="action-buttons">
-                                        <a href="{{ route('gestion.orders.show', $paiement->order_id) }}" class="btn btn-sm btn-view action-btn">
+                                        <a href="{{ route('gestion.orders.show', $order->id) }}" class="btn btn-sm btn-view action-btn">
                                             <i class="bi bi-eye"></i>
                                         </a>
-                                        <a href="#" class="btn btn-sm btn-success action-btn" onclick="window.print()">
-                                            <i class="bi bi-printer"></i>
+                                        <a href="{{ route('gestion.factures.show', $order->id) }}" class="btn btn-sm btn-info action-btn">
+                                            <i class="bi bi-file-text"></i>
                                         </a>
                                     </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center">Aucun paiement trouvé</td>
+                                <td colspan="6" class="text-center">Aucune commande payée trouvée</td>
                             </tr>
                         @endforelse
                         </tbody>
@@ -106,7 +109,7 @@
 
                 <!-- Pagination -->
                 <div class="d-flex justify-content-center mt-4">
-                    {{ $paiements->links() }}
+                    {{ $orders->links() }}
                 </div>
             </div>
         </div>

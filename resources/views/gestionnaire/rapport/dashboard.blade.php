@@ -412,7 +412,7 @@
     </div>
 @endsection
 
-@section('scripts')
+{{--@section('scripts')--}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
@@ -595,5 +595,5 @@
             });
         });
     </script>
-@endsection
+{{--@endsection--}}
 
